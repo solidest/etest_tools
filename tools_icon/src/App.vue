@@ -1,60 +1,89 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="primary"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
+    <tes/>
+    <e-sys-bar> </e-sys-bar>
 
     <v-main>
-      <HelloWorld/>
+      <div>
+        <div v-resize="onResize">
+          <v-system-bar window dark id="app_bar" app>
+            <v-icon>mdi-ember</v-icon>
+            <span class="nodrag" style="user-select:none">{{header}}</span>
+            <v-spacer></v-spacer>
+            <span class="nodrag" style="user-select:none;">{{title}}</span>
+            <v-spacer></v-spacer>
+            <v-icon class="nodrag" @click.stop="onMin">mdi-minus</v-icon>
+            <v-icon class="nodrag" @click.stop="onMax">
+              {{is_max ? 'mdi-checkbox-multiple-blank-outline':'mdi-checkbox-blank-outline'}}</v-icon>
+            <v-icon class="nodrag" @click.stop="onClose">mdi-close</v-icon>
+          </v-system-bar>
+        </div>
+      </div>
     </v-main>
   </v-app>
+
 </template>
 
+<style>
+  ::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
 <script>
-import HelloWorld from './components/HelloWorld';
+  import tes from './components/tes'
+  import ESysBar from './components/ESysBar'
 
-export default {
-  name: 'App',
+  const {
+    ipcRenderer,
+    remote
+  } = window.require('electron')
 
-  components: {
-    HelloWorld,
-  },
+  export default {
+    props: ['header', 'stop_run'],
+    components: {
+      "e-sys-bar": ESysBar,
+      tes
+    },
+    data: () => {
+      return {
+        is_max: false,
+      }
+    },
 
-  data: () => ({
-    //
-  }),
-};
+    computed: {
+      title: function () {
+        let proj = '' //this.$store.state.proj;
+        return proj ? proj.name : 'www.kiyun.com';
+        // return 'www.kiyun.com';
+
+      }
+    },
+
+    methods: {
+      onResize: function () {
+        let self = this;
+        this.$nextTick(() => {
+          self.is_max = remote.getCurrentWindow().isMaximized();
+        });
+      },
+      onMax: function () {
+        let window = remote.getCurrentWindow()
+        if (window.isMaximized()) {
+          window.unmaximize();
+        } else {
+          window.maximize();
+          // window.setFullScreen(true);
+        }
+      },
+      onMin: function () {
+        let window = remote.getCurrentWindow();
+        window.minimize();
+      },
+      onClose: function () {
+        ipcRenderer.send('close-win');
+      }
+    },
+
+  }
 </script>

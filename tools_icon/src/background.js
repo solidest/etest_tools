@@ -19,10 +19,14 @@ function createWindow() {
   win = new BrowserWindow({
     width: 800,
     height: 600,
+    // 隐藏头部
+    frame: false,
+
     webPreferences: {
+      
       // Use pluginOptions.nodeIntegration, leave this alone
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
-      nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
+      nodeIntegration: true,
     }
   })
 
@@ -61,6 +65,8 @@ app.on('activate', () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
+
+
 app.on('ready', async () => {
   // if (isDevelopment && !process.env.IS_TEST) {
   //   // Install Vue Devtools
@@ -72,6 +78,23 @@ app.on('ready', async () => {
   // }
   createWindow()
 })
+////////////////////////////////////////////////////////////////////
+// require('electron').app.on('ready', () => {
+
+//   // 注释掉的这部分是 Electron-Vue 中预装devtool的代码，没有用
+//   // let installExtension = require('electron-devtools-installer')
+//   // installExtension.default(installExtension.VUEJS_DEVTOOLS)
+//   //   .then(() => {})
+//   //   .catch(err => {
+//   //     console.log('Unable to install `vue-devtools`: \n', err)
+//   //   })
+
+//   // 新增的：安装vue-devtools
+//   BrowserWindow.addDevToolsExtension(path.resolve(__dirname, '../../devTools/vue-devtools'));
+  
+// });
+//////////////////////////////////////////////////////////////////
+
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {
