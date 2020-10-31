@@ -236,6 +236,7 @@
         snackbar: false,
         sortBy: 'name',
         sortstate: "",
+        abc:undefined,
       }
     },
     methods: {
